@@ -14,16 +14,20 @@ What's in the folder:
 
 ---
 
-## 1. Put it online for free (Netlify)
+## 1. Your live site
 
-You get a free address like **awm-media.netlify.app** — no domain to buy.
+**https://aidanmynatt81.github.io/awm-media/** (free, hosted on GitHub Pages)
 
-1. Go to **app.netlify.com/drop** and sign up (free).
-2. Drag the whole `photo-site` folder onto the page. In a few seconds it's live.
-3. Go to **Site configuration → Change site name** and type `awm-media`.
-4. **To update later:** open your site in Netlify → **Deploys** tab → drag the folder onto it again.
+**To update it after editing files**, the easiest way is to ask Claude: *"publish my AWM Media site changes."*
+Or paste this in Terminal yourself:
 
-(If you ever buy a domain like awmmedia.com, Netlify can connect it later — nothing else changes.)
+```bash
+cd ~/photo-site && git add -A && git commit -m "Update site" && git push
+```
+
+Changes show up on the live site about a minute later.
+
+(If you ever buy a domain like awmmedia.com, GitHub Pages can use it — nothing else changes.)
 
 ## 2. Add your portfolio
 
@@ -55,9 +59,9 @@ From then on, just add events to that calendar from your phone — the site upda
 
 1. In Google Drive, make a folder for the client and upload their files.
 2. **Share → General access → "Anyone with the link" (Viewer) → Copy link.**
-3. Open `tools/new-client.html` (on your live site: `awm-media.netlify.app/tools/new-client.html`).
+3. Open `tools/new-client.html` (on your live site: `aidanmynatt81.github.io/awm-media/tools/new-client.html`).
 4. Enter the client's name, the Drive link, and an access code you make up (like `smith2026`). Click **Make it**.
-5. Copy the line it gives you and paste it inside `galleries: [ ]` in `config.js`. Save and re-upload.
+5. Copy the line it gives you and paste it inside `galleries: [ ]` in `config.js`. Save and publish.
 6. Send the client the one-click link it shows, or the gallery page plus their code.
 
 **Why the extra step?** Anyone can view a website's files, so the Drive links are scrambled with the client's code. Without the code, nobody can find a client's photos — not even by reading the site's files.
