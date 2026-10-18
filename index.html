@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AWM Media</title>
+  <meta name="description" content="AWM Media — photography and video.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a href="#" class="brand" data-name>AWM Media</a>
+      <button class="menu-btn" aria-label="Menu" onclick="document.querySelector('nav').classList.toggle('open')">☰</button>
+      <nav onclick="this.classList.remove('open')">
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#contact">Contact</a>
+        <a href="gallery.html">Client Gallery</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Photography &amp; Video</p>
+      <h1 data-name>AWM Media</h1>
+      <p id="tagline"></p>
+      <div class="btns">
+        <a href="#services" class="btn">Book a session</a>
+        <a href="#work" class="btn ghost">See my work</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="work">
+    <div class="wrap">
+      <p class="eyebrow">Portfolio</p>
+      <h2>Recent work</h2>
+      <div class="grid" id="photos"></div>
+      <div class="videos" id="videos"></div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <p class="eyebrow">Services &amp; Booking</p>
+      <h2>Pricing</h2>
+      <p class="lede">Pick a package and pay securely online. Card, Apple Pay and Google Pay accepted.</p>
+      <div class="cards" id="cards"></div>
+      <p class="note" id="any-amount"></p>
+    </div>
+  </section>
+
+  <section id="schedule">
+    <div class="wrap">
+      <p class="eyebrow">Schedule</p>
+      <h2>Upcoming events &amp; availability</h2>
+      <div class="cal" id="cal"></div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap contact">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h2>Let's work together</h2>
+        <ul id="contact-list"></ul>
+      </div>
+      <form id="contact-form">
+        <label for="cf-name">Your name</label>
+        <input id="cf-name" required>
+        <label for="cf-date">Event date (if you have one)</label>
+        <input id="cf-date" type="date">
+        <label for="cf-msg">What are you looking for?</label>
+        <textarea id="cf-msg" rows="5" required></textarea>
+        <button class="btn" type="submit">Send message</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">© <span id="year"></span> <span data-name>AWM Media</span> · <a href="gallery.html">Client Gallery</a></div>
+  </footer>
+
+  <div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+
+  <script>
+    const S = window.SITE;
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    document.title = S.name;
+    document.querySelectorAll("[data-name]").forEach((el) => (el.textContent = S.name));
+    document.getElementById("tagline").textContent = S.tagline;
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Portfolio photos
+    const lb = document.getElementById("lightbox");
+    document.getElementById("photos").innerHTML = S.photos.map((p) => `
+      <div class="tile" data-src="${esc(p.file)}">
+        <img src="${esc(p.file)}" alt="${esc(p.caption)}" loading="lazy"
+             onerror="this.parentNode.classList.add('empty'); this.parentNode.innerHTML='Add ${esc(p.file)}'">
+        <span class="cap">${esc(p.caption)}</span>
+      </div>`).join("");
+    document.querySelectorAll(".tile").forEach((t) => t.addEventListener("click", () => {
+      if (t.classList.contains("empty")) return;
+      lb.querySelector("img").src = t.dataset.src;
+      lb.classList.add("open");
+    }));
+
+    // Videos (YouTube / Vimeo)
+    function embed(url) {
+      let m = url.match(/(?:youtu\.be\/|v=|shorts\/)([\w-]{11})/);
+      if (m) return `https://www.youtube-nocookie.com/embed/${m[1]}`;
+      m = url.match(/vimeo\.com\/(\d+)/);
+      if (m) return `https://player.vimeo.com/video/${m[1]}`;
+      return null;
+    }
+    document.getElementById("videos").innerHTML = S.videos.map((v) => {
+      const src = embed(v.url);
+      return src ? `<div class="video"><iframe src="${src}" title="${esc(v.title)}" allow="fullscreen; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>` : "";
+    }).join("");
+
+    // Services + Stripe payment links
+    const contactHref = `mailto:${S.email}`;
+    document.getElementById("cards").innerHTML = S.services.map((s) => `
+      <div class="card">
+        <h3>${esc(s.name)}</h3>
+        <div class="price">${esc(s.price)}</div>
+        <p>${esc(s.details)}</p>
+        ${s.pay
+          ? `<a class="btn" href="${esc(s.pay)}" target="_blank" rel="noopener">Pay now</a>`
+          : `<a class="btn ghost" href="#contact">Ask about booking</a>`}
+      </div>`).join("");
+    if (S.payAnyAmount) {
+      document.getElementById("any-amount").innerHTML =
+        `Have an invoice or balance due? <a href="${esc(S.payAnyAmount)}" target="_blank" rel="noopener">Pay a custom amount →</a>`;
+    }
+
+    // Google Calendar
+    const cal = document.getElementById("cal");
+    if (S.googleCalendarId) {
+      const src = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(S.googleCalendarId)}` +
+        `&ctz=${encodeURIComponent(S.timeZone)}&mode=AGENDA&showTitle=0&showPrint=0&showTabs=1&showCalendars=0`;
+      cal.innerHTML = `<iframe src="${src}" title="Schedule" loading="lazy"></iframe>`;
+    } else {
+      cal.innerHTML = `<div class="cal-empty">Schedule coming soon — reach out to check a date.</div>`;
+    }
+
+    // Contact info
+    const items = [`<li><span>Email</span><a href="${contactHref}">${esc(S.email)}</a></li>`];
+    if (S.phone) items.push(`<li><span>Phone</span><a href="tel:${esc(S.phone.replace(/[^\d+]/g, ""))}">${esc(S.phone)}</a></li>`);
+    if (S.instagram) items.push(`<li><span>Instagram</span><a href="https://instagram.com/${esc(S.instagram)}" target="_blank" rel="noopener">@${esc(S.instagram)}</a></li>`);
+    items.push(`<li><span>Location</span>${esc(S.location)}</li>`);
+    document.getElementById("contact-list").innerHTML = items.join("");
+
+    // Contact form → opens the visitor's email app, addressed to you (no outside service needed)
+    document.getElementById("contact-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("cf-name").value;
+      const date = document.getElementById("cf-date").value;
+      const msg = document.getElementById("cf-msg").value;
+      const body = `Name: ${name}\nEvent date: ${date || "not set"}\n\n${msg}`;
+      location.href = `mailto:${S.email}?subject=${encodeURIComponent("Booking inquiry from " + name)}&body=${encodeURIComponent(body)}`;
+    });
+  </script>
+</body>
+</html>

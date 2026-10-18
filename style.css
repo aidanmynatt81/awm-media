@@ -1,0 +1,122 @@
+:root {
+  --bg: #0e0e0f;
+  --panel: #18181a;
+  --line: #2a2a2d;
+  --text: #f2efe9;
+  --muted: #a39f97;
+  --accent: #d9a85b;
+  --accent-ink: #1a1408;
+  --radius: 14px;
+  --max: 1120px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+img { max-width: 100%; display: block; }
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+
+/* Header */
+header.top {
+  position: sticky; top: 0; z-index: 20;
+  background: rgba(14,14,15,.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+.brand { font-family: "Playfair Display", Georgia, serif; font-size: 1.35rem; text-decoration: none; letter-spacing: .02em; }
+nav { display: flex; gap: 22px; font-size: .92rem; }
+nav a { text-decoration: none; color: var(--muted); }
+nav a:hover { color: var(--text); }
+.menu-btn { display: none; background: none; border: 1px solid var(--line); color: var(--text); border-radius: 8px; padding: 6px 10px; font-size: 1rem; }
+
+/* Hero */
+.hero { padding: 110px 0 90px; text-align: center; }
+.hero h1 { font-family: "Playfair Display", Georgia, serif; font-weight: 500; font-size: clamp(2.6rem, 7vw, 5rem); line-height: 1.05; margin: 0 0 18px; }
+.hero p { color: var(--muted); font-size: 1.15rem; margin: 0 auto 34px; max-width: 560px; }
+.btn {
+  display: inline-block; padding: 13px 26px; border-radius: 999px;
+  background: var(--accent); color: var(--accent-ink); font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer; font-size: 1rem; font-family: inherit;
+}
+.btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--line); }
+.btn:hover { filter: brightness(1.08); }
+.btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* Sections */
+section { padding: 80px 0; border-top: 1px solid var(--line); }
+.eyebrow { color: var(--accent); text-transform: uppercase; letter-spacing: .16em; font-size: .75rem; font-weight: 600; margin: 0 0 8px; }
+h2 { font-family: "Playfair Display", Georgia, serif; font-weight: 500; font-size: clamp(1.9rem, 4vw, 2.6rem); margin: 0 0 32px; }
+.lede { color: var(--muted); margin: -18px 0 32px; max-width: 620px; }
+
+/* Portfolio */
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.tile { position: relative; aspect-ratio: 4/5; border-radius: 10px; overflow: hidden; background: linear-gradient(135deg, #2b2620, #17181c); cursor: zoom-in; }
+.tile img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+.tile:hover img { transform: scale(1.04); }
+.tile .cap { position: absolute; left: 12px; bottom: 10px; font-size: .82rem; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,.7); }
+.tile.empty { display: grid; place-items: center; color: var(--muted); font-size: .85rem; cursor: default; }
+.videos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px; }
+.video { aspect-ratio: 16/9; border-radius: 10px; overflow: hidden; background: #000; }
+.video iframe { width: 100%; height: 100%; border: 0; }
+
+/* Lightbox */
+.lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.92); display: none; align-items: center; justify-content: center; z-index: 50; padding: 20px; }
+.lightbox.open { display: flex; }
+.lightbox img { max-height: 90vh; border-radius: 6px; }
+
+/* Services */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; display: flex; flex-direction: column; }
+.card h3 { margin: 0 0 4px; font-size: 1.1rem; }
+.card .price { font-family: "Playfair Display", Georgia, serif; font-size: 1.9rem; color: var(--accent); margin: 6px 0 10px; }
+.card p { color: var(--muted); margin: 0 0 22px; font-size: .94rem; flex: 1; }
+.card .btn { text-align: center; }
+.note { color: var(--muted); font-size: .85rem; margin-top: 18px; }
+
+/* Schedule */
+.cal { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.cal iframe { width: 100%; height: 560px; border: 0; display: block; }
+.cal-empty { padding: 40px; text-align: center; color: var(--muted); }
+
+/* Contact */
+.contact { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.contact ul { list-style: none; padding: 0; margin: 0; }
+.contact li { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.contact li span { color: var(--muted); display: block; font-size: .8rem; text-transform: uppercase; letter-spacing: .1em; }
+form label { display: block; font-size: .85rem; color: var(--muted); margin: 0 0 6px; }
+input, textarea {
+  width: 100%; background: var(--panel); border: 1px solid var(--line); color: var(--text);
+  border-radius: 10px; padding: 12px 14px; font: inherit; margin-bottom: 14px;
+}
+input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+
+footer { border-top: 1px solid var(--line); padding: 30px 0; color: var(--muted); font-size: .85rem; text-align: center; }
+
+/* Client gallery page */
+.gate { min-height: calc(100vh - 64px - 90px); display: grid; place-items: center; padding: 60px 0; }
+.gate-box { width: 100%; max-width: 420px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 34px; text-align: center; }
+.gate-box h1 { font-family: "Playfair Display", Georgia, serif; font-weight: 500; margin: 0 0 8px; }
+.gate-box p { color: var(--muted); margin: 0 0 24px; }
+.gate-box input { text-align: center; font-size: 1.1rem; letter-spacing: .08em; }
+.msg { min-height: 1.4em; color: #e88; font-size: .9rem; margin-top: 10px; }
+.result h2 { margin-bottom: 8px; }
+
+@media (max-width: 760px) {
+  nav { display: none; position: absolute; top: 64px; left: 0; right: 0; background: var(--bg); flex-direction: column; padding: 16px 20px; border-bottom: 1px solid var(--line); gap: 14px; }
+  nav.open { display: flex; }
+  .menu-btn { display: block; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .videos, .contact { grid-template-columns: 1fr; }
+  .hero { padding: 80px 0 64px; }
+  section { padding: 60px 0; }
+  .cal iframe { height: 480px; }
+  .wrap { padding: 0 16px; }
+}

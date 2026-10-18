@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add Client Gallery</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../lock.js"></script>
+  <style>
+    .tool { max-width: 620px; margin: 50px auto; }
+    textarea.out { font-family: ui-monospace, Menlo, monospace; font-size: .8rem; }
+    ol { color: var(--muted); padding-left: 20px; }
+  </style>
+</head>
+<body>
+  <div class="wrap tool">
+    <p class="eyebrow">Owner tool · not linked from the site</p>
+    <h2>Add a client gallery</h2>
+    <ol>
+      <li>In Google Drive, make a folder for the client and upload their photos/videos.</li>
+      <li>Click <b>Share</b> → General access: <b>Anyone with the link</b> (Viewer) → <b>Copy link</b>.</li>
+      <li>Fill this in and click <b>Make it</b>.</li>
+    </ol>
+    <form id="f">
+      <label>Client name (what they'll see)</label>
+      <input id="client" placeholder="The Smith Wedding" required>
+      <label>Google Drive folder link</label>
+      <input id="link" placeholder="https://drive.google.com/drive/folders/..." required>
+      <label>Access code (give this to the client)</label>
+      <input id="code" placeholder="smith2026" required>
+      <label>Message to client (optional)</label>
+      <input id="note" placeholder="Thank you! Here are your 412 edited photos and highlight film.">
+      <button class="btn">Make it</button>
+    </form>
+    <div id="out" style="display:none;margin-top:30px">
+      <label>4. Copy this line and paste it inside <code>galleries: [ ]</code> in <b>config.js</b>, then save &amp; upload.</label>
+      <textarea class="out" id="line" rows="5" readonly onclick="this.select()"></textarea>
+      <button class="btn ghost" type="button" id="copy">Copy</button>
+      <p class="note">5. Send your client: the gallery page link + their code. Or one-click link: <br><code id="direct"></code></p>
+    </div>
+  </div>
+  <script>
+    document.getElementById("f").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const v = (id) => document.getElementById(id).value.trim();
+      const code = v("code");
+      const locked = await Lock.lock(code, { client: v("client"), link: v("link"), note: v("note") });
+      document.getElementById("line").value = `    // ${v("client").replace(/\n/g, " ")}\n    ${JSON.stringify(locked)},`;
+      const base = location.href.replace(/tools\/new-client\.html.*$/, "gallery.html");
+      document.getElementById("direct").textContent = `${base}#${encodeURIComponent(code.toLowerCase().replace(/\s+/g, ""))}`;
+      document.getElementById("out").style.display = "block";
+    });
+    document.getElementById("copy").addEventListener("click", () => {
+      navigator.clipboard.writeText(document.getElementById("line").value);
+      document.getElementById("copy").textContent = "Copied ✓";
+    });
+  </script>
+</body>
+</html>

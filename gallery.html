@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Client Gallery</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js"></script>
+  <script src="lock.js"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="wrap">
+      <a href="index.html" class="brand" data-name>AWM Media</a>
+      <a href="index.html" class="btn ghost" style="padding:8px 16px;font-size:.9rem">← Back to site</a>
+    </div>
+  </header>
+
+  <div class="wrap gate">
+    <div class="gate-box" id="box">
+      <p class="eyebrow">Client Gallery</p>
+      <h1>Your photos &amp; videos</h1>
+      <p>Enter the access code we sent you.</p>
+      <form id="f">
+        <input id="code" placeholder="Access code" autocomplete="off" autocapitalize="none" required>
+        <button class="btn" style="width:100%">Open my gallery</button>
+      </form>
+      <div class="msg" id="msg"></div>
+    </div>
+  </div>
+
+  <footer><div class="wrap">© <span id="year"></span> <span data-name>AWM Media</span></div></footer>
+
+  <script>
+    const S = window.SITE;
+    const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    document.querySelectorAll("[data-name]").forEach((el) => (el.textContent = S.name));
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    async function open(code) {
+      const msg = document.getElementById("msg");
+      msg.textContent = "Checking…";
+      for (const entry of S.galleries) {
+        const g = await Lock.unlock(code, entry);
+        if (g) {
+          document.getElementById("box").innerHTML = `
+            <div class="result">
+              <p class="eyebrow">Welcome</p>
+              <h2>${esc(g.client)}</h2>
+              ${g.note ? `<p>${esc(g.note)}</p>` : `<p>Your gallery is ready.</p>`}
+              <a class="btn" href="${esc(g.link)}" target="_blank" rel="noopener" style="width:100%">View &amp; download</a>
+              <p class="note">Tip: in Google Drive, use the ⋮ menu or “Download all” to save everything at once.</p>
+            </div>`;
+          return;
+        }
+      }
+      msg.textContent = "That code didn't match. Double-check it, or reach out and we'll help.";
+    }
+
+    document.getElementById("f").addEventListener("submit", (e) => {
+      e.preventDefault();
+      open(document.getElementById("code").value);
+    });
+    // Lets you send clients a direct link like gallery.html#smith2026
+    if (location.hash.length > 1) {
+      const c = decodeURIComponent(location.hash.slice(1));
+      document.getElementById("code").value = c;
+      history.replaceState(null, "", location.pathname);
+      open(c);
+    }
+  </script>
+</body>
+</html>
